@@ -1,0 +1,16 @@
+:root {
+    --primary-bg:#FFFFFF;
+    --primary-text:#030C01;
+
+    /* Button */
+    --primary-button-bg: linear-gradient(135deg, #E8E81C, #42ED13);
+    --pagination-button-bg: #FFFFFF;
+    --pagination-button-hover-bg: #D9FBCF;
+    --pagination-button-active-bg: #7AF259;
+    --pagination-button-border-color: #030C0126;
+    --footer-bg: #EEEE60;
+    --border-color: #030C0126;
+    --primary-button-active-bg: #4E544D;
+
+}
+
