@@ -1,6 +1,6 @@
 :root {
-    --primary-bg:#FFFFFF;
-    --primary-text:#030C01;
+    --primary-bg: #FFFFFF;
+    --primary-text: #030C01;
 
     /* Button */
     --primary-button-bg: linear-gradient(135deg, #E8E81C, #42ED13);
@@ -11,6 +11,11 @@
     --footer-bg: #EEEE60;
     --border-color: #030C0126;
     --primary-button-active-bg: #4E544D;
+    --modal-bg: #00000040;
+    --modal-divider: #030C0126;
+    --notification-error-bg: #d41414de;
+    --notification-bg: #272725dc;
 
+
+    --input-placeholder: #030C0199;
 }
-
