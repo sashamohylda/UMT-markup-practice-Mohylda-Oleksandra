@@ -66,7 +66,7 @@ function staticJsonServerEmitter({ source = "db.json", outDir = "api" } = {}) {
 }
 
 export default defineConfig({
-  base: '/UMT-markup-practice-Mohylda-Oleksandra/',
+  base,
   plugins: [staticJsonServerEmitter()],
   server: {
     port: 4000,
