@@ -7,6 +7,14 @@ function syncModalOpenOnDocument() {
   document.documentElement.classList.toggle("menu-open", isOpen);
 }
 
+function closeMenu() {
+  menuBtnRef.setAttribute("aria-expanded", "false");
+  document.body.classList.remove("menu-open");
+  syncModalOpenOnDocument();
+  menuBtnRef.classList.remove("is-open");
+  mobileMenuRef.classList.remove("is-open");
+}
+
 menuBtnRef.addEventListener("click", () => {
   window.scrollTo(0, 0);
 
@@ -22,41 +30,26 @@ menuBtnRef.addEventListener("click", () => {
 
 mobileMenuLinkRef.forEach((ref) => {
   ref.addEventListener("click", () => {
-    menuBtnRef.setAttribute("aria-expanded", "false");
-
-    document.body.classList.remove("menu-open");
-    syncModalOpenOnDocument();
-    menuBtnRef.classList.remove("is-open");
-
-    mobileMenuRef.classList.remove("is-open");
+    closeMenu();
   });
 });
 
 window.addEventListener("resize", () => {
   if (window.innerWidth >= 1440) {
-    menuBtnRef.setAttribute("aria-expanded", "false");
-
-    document.body.classList.remove("menu-open");
-    menuBtnRef.classList.remove("is-open");
-
-    mobileMenuRef.classList.remove("is-open");
+    closeMenu();
   }
 });
 
 const headerOrderButton = document.querySelector(".header-order-button");
 
 headerOrderButton?.addEventListener("click", () => {
+  closeMenu();
   document.getElementById("bouquets")?.scrollIntoView({ behavior: "smooth" });
 });
 
 const menuOrderButton = document.querySelector(".menu-action-button");
 
 menuOrderButton?.addEventListener("click", () => {
-  menuBtnRef.setAttribute("aria-expanded", "false");
-  document.body.classList.remove("menu-open");
-  syncModalOpenOnDocument();
-  menuBtnRef.classList.remove("is-open");
-  mobileMenuRef.classList.remove("is-open");
-
+  closeMenu();
   document.getElementById("bouquets")?.scrollIntoView({ behavior: "smooth" });
 });
