@@ -43,6 +43,12 @@ window.addEventListener("resize", () => {
   }
 });
 
+const headerOrderButton = document.querySelector(".header-order-button");
+
+headerOrderButton?.addEventListener("click", () => {
+  document.getElementById("bouquets")?.scrollIntoView({ behavior: "smooth" });
+});
+
 const menuOrderButton = document.querySelector(".menu-action-button");
 
 menuOrderButton?.addEventListener("click", () => {
