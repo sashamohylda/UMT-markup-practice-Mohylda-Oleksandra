@@ -3,9 +3,10 @@ const mobileMenuRef = document.querySelector("[data-menu]");
 const mobileMenuLinkRef = document.querySelectorAll(".menu-navigation-link");
 
 function syncModalOpenOnDocument() {
-  const isOpen =document.body.classList.contains("menu-open");
+  const isOpen = document.body.classList.contains("menu-open");
   document.documentElement.classList.toggle("menu-open", isOpen);
 }
+
 menuBtnRef.addEventListener("click", () => {
   window.scrollTo(0, 0);
 
@@ -19,25 +20,37 @@ menuBtnRef.addEventListener("click", () => {
   mobileMenuRef.classList.toggle("is-open");
 });
 
-mobileMenuLinkRef.forEach((ref) => { 
-    ref.addEventListener('click', () => {
-        menuBtnRef.setAttribute("aria-expanded", "false");
+mobileMenuLinkRef.forEach((ref) => {
+  ref.addEventListener("click", () => {
+    menuBtnRef.setAttribute("aria-expanded", "false");
 
-  document.body.classList.remove("menu-open");
-  syncModalOpenOnDocument();
-  menuBtnRef.classList.remove("is-open");
+    document.body.classList.remove("menu-open");
+    syncModalOpenOnDocument();
+    menuBtnRef.classList.remove("is-open");
 
-  mobileMenuRef.classList.remove("is-open");
-    })
+    mobileMenuRef.classList.remove("is-open");
+  });
 });
 
 window.addEventListener("resize", () => {
-    if (window.innerWidth >= 1440) {
-        menuBtnRef.setAttribute("aria-expanded", "false");
+  if (window.innerWidth >= 1440) {
+    menuBtnRef.setAttribute("aria-expanded", "false");
 
+    document.body.classList.remove("menu-open");
+    menuBtnRef.classList.remove("is-open");
+
+    mobileMenuRef.classList.remove("is-open");
+  }
+});
+
+const menuOrderButton = document.querySelector(".menu-action-button");
+
+menuOrderButton?.addEventListener("click", () => {
+  menuBtnRef.setAttribute("aria-expanded", "false");
   document.body.classList.remove("menu-open");
+  syncModalOpenOnDocument();
   menuBtnRef.classList.remove("is-open");
-
   mobileMenuRef.classList.remove("is-open");
-    }
-})
+
+  document.getElementById("bouquets")?.scrollIntoView({ behavior: "smooth" });
+});
