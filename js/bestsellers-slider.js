@@ -17,12 +17,16 @@ function prefersReducedMotion() {
 function buildBestsellerCard(item) {
   const card = document.createElement("div");
   card.className = "bestsellers-card";
-  card.dataset.text = item.text ?? item.desc ?? ""; 
+  card.dataset.text = item.text ?? item.desc ?? "";
+
+  const img2x = item.img2x ?? item.img.replace("@1x.", "@2x.") ?? "";
+  const srcset = img2x ? `${img2x} 2x` : "";
 
   card.innerHTML = `
     <img
       class="bestsellers-image"
       src="${item.img ?? ""}"
+      srcset="${srcset}"
       alt="${item.title ?? ""}"
     />
     <div class="bestsellers-card-body">
@@ -78,16 +82,16 @@ async function bootBestsellersSlider() {
         prevSlideMessage: "Previous bouquet",
         nextSlideMessage: "Next bouquet",
       },
-breakpoints: {
-  768: {
-    slidesPerView: 2,
-    spaceBetween: 32,
-  },
-  1440: {
-    slidesPerView: 3,  
-    spaceBetween: 32,
-  },
-},
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 32,
+        },
+        1440: {
+          slidesPerView: 3,
+          spaceBetween: 32,
+        },
+      },
       on: {
         breakpoint(sw) {
           sw.params.speed = 0;

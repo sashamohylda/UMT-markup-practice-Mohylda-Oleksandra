@@ -35,6 +35,8 @@ function buildItemMarkup() {
 function fillItem(listItem, product) {
   const image = listItem.querySelector(".bouqets-item-image");
   image.src = product.img ?? "";
+  const img2x = product.img2x ?? (product.img ? product.img.replace("@1x.", "@2x.") : "");
+  if (img2x) image.srcset = `${img2x} 2x`;
   image.alt = product.title ?? "";
   listItem.querySelector(".bestsellers-bouqets-title").textContent = product.title ?? "";
   listItem.querySelector(".bestsellers-bouqets-subtitle").textContent = product.desc ?? "";
