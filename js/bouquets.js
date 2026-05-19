@@ -11,6 +11,7 @@ const showMoreButton = document.querySelector(".bouqets-item-show-more-button");
 
 let lastLoadedPage = 0;
 let totalPages = 1;
+let allProducts = [];
 
 function formatPrice(price) {
   if (!price) return "-";
@@ -82,26 +83,22 @@ async function fetchPage(page, appendItems = false) {
   }
 
   try {
-    const response = await apiClient.get("/products", {
-      params: {
-        _page: page,
-        _per_page: itemsPerPage,
-      },
-    });
+    if (allProducts.length === 0) {
+      const response = await apiClient.get("/products");
+      const body = response.data;
 
-    const body = response.data;
-    let products = [];
-
-    if (Array.isArray(body)) {
-      products = body;
-      totalPages = 1;
-    } else {
-      products = body?.data ?? [];
-      const parsedPages = Number(body?.pages);
-      totalPages = Number.isFinite(parsedPages) && parsedPages >= 1 ? parsedPages : 1;
+      if (Array.isArray(body)) {
+        allProducts = body;
+      } else {
+        allProducts = body?.data ?? [];
+      }
     }
 
-    renderChunk(products, !appendItems);
+    totalPages = Math.ceil(allProducts.length / itemsPerPage);
+    const start = (page - 1) * itemsPerPage;
+    const chunk = allProducts.slice(start, start + itemsPerPage);
+
+    renderChunk(chunk, !appendItems);
     lastLoadedPage = page;
     updateShowMore();
 
@@ -125,4 +122,3 @@ async function init() {
 }
 
 init();
-
