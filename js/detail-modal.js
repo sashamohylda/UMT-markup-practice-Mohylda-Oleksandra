@@ -37,10 +37,6 @@ document.addEventListener("touchmove", trapScrollBehindOverlays, { passive: fals
 document.addEventListener("wheel", trapScrollBehindOverlays, { passive: false });
 
 function openDetailModal() {
-  scrollPosition = window.scrollY;
-  document.body.style.top = `-${scrollPosition}px`;
-  document.body.style.position = "fixed";
-  document.body.style.width = "100%";
   detailModal.classList.add("is-open");
   syncModalOpenState();
 }
@@ -62,10 +58,6 @@ function closeOrderModal() {
 }
 
 function closeDetailModal() {
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.width = "";
-  window.scrollTo(0, scrollPosition);
   detailModal.classList.remove("is-open");
   syncModalOpenState();
 }

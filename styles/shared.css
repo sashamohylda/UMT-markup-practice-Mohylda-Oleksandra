@@ -6,11 +6,11 @@ html.menu-open {
     overscroll-behavior: none;
 }
 
-body.modal-open,
+/* body.modal-open,
 body.menu-open {
     overflow: hidden;
     overscroll-behavior: none;
-}
+} */
 
 body {
     font-family: "Roboto", sans-serif;
