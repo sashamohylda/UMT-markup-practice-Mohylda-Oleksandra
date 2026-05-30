@@ -7,19 +7,17 @@
     "dev": "vite",
     "preview": "vite preview",
     "preview:pages": "GITHUB_ACTIONS=true GITHUB_REPOSITORY=sashamohylda/umt-markup-practice-mohylda-oleksandra VITE_API_MODE=static sh -c 'vite build && vite preview'",
-    "build": "vite build",
-    "api": "json-server db.json --port 3001"
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sashamohylda/UMT-markup-practice-Mohylda-Oleksandra.git"
   },
-  "keywords": [],
+"keywords": [ ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.16.0",
-    "json-server": "^1.0.0-beta.15",
     "swiper": "^12.1.4",
     "vite": "^8.0.12"
   }

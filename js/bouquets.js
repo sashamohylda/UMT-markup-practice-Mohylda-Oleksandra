@@ -10,8 +10,6 @@ const catalogueLoader = document.getElementById("bouquets-loader");
 const showMoreButton = document.querySelector(".bouqets-item-show-more-button");
 
 let lastLoadedPage = 0;
-let totalPages = 1;
-let allProducts = [];
 
 function formatPrice(price) {
   if (!price) return "-";
@@ -28,15 +26,13 @@ function buildItemMarkup() {
       <img class="bouqets-item-image" alt="">
       <h3 class="bestsellers-bouqets-title"></h3>
       <p class="bestsellers-bouqets-subtitle"></p>
-      <p class="bestsellers-bouqets-title price-text"></p>
+      <p class="price-text"></p>
     </li>`;
 }
 
 function fillItem(listItem, product) {
   const image = listItem.querySelector(".bouqets-item-image");
   image.src = product.img ?? "";
-  const img2x = product.img2x ?? (product.img ? product.img.replace("@1x.", "@2x.") : "");
-  if (img2x) image.srcset = `${img2x} 2x`;
   image.alt = product.title ?? "";
   listItem.querySelector(".bestsellers-bouqets-title").textContent = product.title ?? "";
   listItem.querySelector(".bestsellers-bouqets-subtitle").textContent = product.desc ?? "";
@@ -70,9 +66,11 @@ function renderChunk(products, shouldReplace) {
   }
 }
 
-function updateShowMore() {
+function updateShowMore(meta) {
   if (!showMoreButton) return;
-  showMoreButton.hidden = lastLoadedPage >= totalPages;
+  const currentPage = Number(meta.page);
+  const totalPages = Number(meta.pages);
+  showMoreButton.hidden = currentPage >= totalPages;
 }
 
 async function fetchPage(page, appendItems = false) {
@@ -80,29 +78,22 @@ async function fetchPage(page, appendItems = false) {
 
   if (isInitial) {
     setCatalogueInitialLoading(true);
+    if (catalogueList) catalogueList.replaceChildren();
   } else {
     setShowMoreLoading(true);
   }
 
   try {
-    if (allProducts.length === 0) {
-      const response = await apiClient.get("/products");
-      const body = response.data;
+    const response = await apiClient.get("/bouquets", {
+      params: { page, "per-page": itemsPerPage },
+    });
 
-      if (Array.isArray(body)) {
-        allProducts = body;
-      } else {
-        allProducts = body?.data ?? [];
-      }
-    }
+    const products = response.data?.data ?? [];
+    const meta = response.data?.meta ?? {};
 
-    totalPages = Math.ceil(allProducts.length / itemsPerPage);
-    const start = (page - 1) * itemsPerPage;
-    const chunk = allProducts.slice(start, start + itemsPerPage);
-
-    renderChunk(chunk, !appendItems);
+    renderChunk(products, false);
     lastLoadedPage = page;
-    updateShowMore();
+    updateShowMore({ page, pages: meta.pages ?? 1 });
 
   } catch (error) {
     showErrorNotification(extractErrorMessage(error));
@@ -113,6 +104,8 @@ async function fetchPage(page, appendItems = false) {
 }
 
 async function init() {
+  if (!catalogueList) return;
+
   if (showMoreButton) {
     showMoreButton.hidden = true;
     showMoreButton.addEventListener("click", () => {

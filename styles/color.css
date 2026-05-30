@@ -15,6 +15,9 @@
     --modal-divider: #030C0126;
     --notification-error-bg: #d41414de;
     --notification-bg: #272725dc;
+    --notification-success-bg: #f0fce8;
+    --notification-success-text: #1a3d0f;
+    --notification-success-border: #7af259;
 
 
     --input-placeholder: #030C0199;

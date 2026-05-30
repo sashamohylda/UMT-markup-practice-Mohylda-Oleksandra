@@ -5,6 +5,9 @@
 
 * {
     box-sizing: border-box;
+}
+
+img {
     max-width: 100%;
 }
 
@@ -656,6 +659,11 @@ footer {
     width: 295px;
 }
 
+.order-modal-cta.is-loading {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
 /* ======================== Tablet ======================== */
 
 @media screen and (min-width: 768px) {
@@ -665,16 +673,12 @@ footer {
         padding: 0 32px;
     }
 
-    /* Header */
-
     .header-order-button {
         display: block;
         height: 40px;
         margin-left: auto;
         margin-right: 16px;
     }
-
-    /* Hero */
 
     .hero-container {
         padding: 152px 0;
@@ -692,8 +696,6 @@ footer {
     .hero-button {
         width: fit-content;
     }
-
-    /* About */
 
     #about {
         display: flex;
@@ -722,8 +724,6 @@ footer {
         flex-shrink: 0;
     }
 
-    /* Bestsellers */
-
     .bestsellers-section-title {
         margin: 0 0 32px;
     }
@@ -731,8 +731,6 @@ footer {
     .bestsellers-image {
         height: 380px;
     }
-
-    /* Bouquets */
 
     .bouquets-header {
         max-width: 100%;
@@ -757,8 +755,6 @@ footer {
         max-width: 406px;
     }
 
-    /* Feedback */
-
     .feedback-section-title {
         width: auto;
         margin: 0 0 32px;
@@ -773,8 +769,6 @@ footer {
         width: auto;
         margin: 32px 0 0;
     }
-
-    /* Contacts */
 
     .contacts-block {
         flex-direction: row;
@@ -792,8 +786,6 @@ footer {
     .florist-image {
         height: 420px;
     }
-
-    /* Footer */
 
     .footer-actions {
         gap: 40px;
@@ -820,8 +812,6 @@ footer {
         gap: 32px;
     }
 
-    /* Mobile Menu */
-
     .mobile-menu {
         padding: 16px 33px;
     }
@@ -838,11 +828,10 @@ footer {
         display: none;
     }
 
-    /* Detail Modal */
-
     .modal-container {
         width: 704px;
         height: auto;
+        padding: 24px;
     }
 
     .detail-modal-content-wrapper {
@@ -856,10 +845,17 @@ footer {
 
     .detail-modal-image {
         width: 308px;
+<<<<<<< HEAD
         height: 337px;
         flex-shrink: 0;
         object-fit: cover;
         border-radius: 16px;
+=======
+        height: 328px;
+        max-height: none;
+        flex-shrink: 0;
+        object-fit: cover;
+>>>>>>> 6f545ec (feat: connect frontend to backend API)
     }
 
     .detail-modal-button {
@@ -867,8 +863,6 @@ footer {
         width: auto;
         height: 44px;
     }
-
-    /* Order Modal */
 
     .order-modal-form .order-button {
         width: 340px;
@@ -891,8 +885,6 @@ footer {
     .section-title {
         font-size: var(--heading-desktop);
     }
-
-    /* Header */
 
     .header-section {
         padding: 16px 0;
@@ -927,8 +919,6 @@ footer {
         width: 370px;
     }
 
-    /* Hero */
-
     .hero-section {
         min-height: 669px;
         max-width: 1440px;
@@ -949,8 +939,6 @@ footer {
         max-width: 667px;
     }
 
-    /* About */
-
     #about .container {
         gap: 80px;
     }
@@ -960,8 +948,6 @@ footer {
         max-width: 600px;
     }
 
-    /* Bestsellers */
-
     .bestsellers-section-title {
         font-size: 48px;
     }
@@ -969,8 +955,6 @@ footer {
     .bestsellers-image {
         height: 320px;
     }
-
-    /* Bouquets */
 
     .bouquets-list {
         grid-template-columns: repeat(4, 1fr);
@@ -987,8 +971,6 @@ footer {
         width: 406px;
         max-width: 406px;
     }
-
-    /* Feedback */
 
     .feedback-section-title {
         width: auto;
@@ -1007,8 +989,6 @@ footer {
     .feedback-navigation-block {
         width: 100%;
     }
-
-    /* Contacts */
 
     .contacts-block {
         gap: 80px;
@@ -1031,8 +1011,6 @@ footer {
     .florist-image {
         height: 720px;
     }
-
-    /* Footer */
 
     .footer-actions {
         flex-direction: row;
@@ -1064,11 +1042,11 @@ footer {
         height: 40px;
     }
 
-    /* Detail Modal */
-
     .modal-container {
         width: 1280px;
+        min-height: 700px;
         height: auto;
+        padding: 24px;
     }
 
     .detail-modal-content-wrapper {
@@ -1083,6 +1061,12 @@ footer {
     .detail-modal-image {
         width: 536px;
         height: 572px;
+<<<<<<< HEAD
+=======
+        min-width: 536px;
+        max-width: none;
+        max-height: none;
+>>>>>>> 6f545ec (feat: connect frontend to backend API)
         flex-shrink: 0;
         object-fit: cover;
     }
@@ -1097,8 +1081,6 @@ footer {
         width: auto;
         height: 44px;
     }
-
-    /* Order Modal */
 
     .order-modal-container {
         width: 842px;

@@ -1,35 +1,36 @@
+import { apiClient } from "./apiClient.js";
+import { showErrorNotification, showSuccessNotification } from "./notifications.js";
+import { extractErrorMessage } from "./utils.js";
+
+const bouquetsList = document.getElementById("bouquets-list");
 const detailModal = document.getElementById("detail-modal");
-const closeDetailButton = document.getElementById("close-modal-button");
-const closeOrderButton = document.getElementById("close-order-modal-button");
+const closeButtons = document.querySelectorAll("#close-modal-button");
 const detailModalContent = document.getElementById("detail-modal-content");
 const orderModal = document.getElementById("order-modal");
+const orderButtons = document.querySelectorAll("#order-button");
 const orderModalForm = document.getElementById("order-modal-form");
+const orderSubmitButton = orderModalForm?.querySelector(".order-modal-cta");
 
-let scrollPosition = 0;
+const orderSubmitDefaultLabel = "Замовити";
+const orderSubmitLoadingLabel = "Завантаження...";
+
+let selectedProductId = null;
+let isOrderSubmitting = false;
 
 function syncModalOpenState() {
-  const anyModalOpen =
-    detailModal.classList.contains("is-open") ||
-    orderModal.classList.contains("is-open");
+  const anyModalOpen = detailModal.classList.contains("is-open") || orderModal.classList.contains("is-open");
   document.body.classList.toggle("modal-open", anyModalOpen);
   document.documentElement.classList.toggle("modal-open", anyModalOpen);
 }
 
 function isOverlayScrollLockActive() {
   const html = document.documentElement;
-  return (
-    html.classList.contains("modal-open") ||
-    html.classList.contains("menu-open")
-  );
+  return html.classList.contains("modal-open") || html.classList.contains("menu-open");
 }
 
 function trapScrollBehindOverlays(event) {
   if (!isOverlayScrollLockActive()) return;
-  if (
-    event.target.closest(".modal-container") ||
-    event.target.closest("[data-menu]")
-  )
-    return;
+  if (event.target.closest(".modal-container") || event.target.closest("[data-menu]")) return;
   event.preventDefault();
 }
 
@@ -41,25 +42,29 @@ function openDetailModal() {
   syncModalOpenState();
 }
 
-function switchToOrderModal() {
-  detailModal.classList.remove("is-open");
+function openOrderModal(productId = null) {
+  selectedProductId = productId;
   orderModal.classList.add("is-open");
   syncModalOpenState();
 }
 
 function closeOrderModal() {
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.width = "";
-  window.scrollTo(0, scrollPosition);
   orderModal.classList.remove("is-open");
   syncModalOpenState();
+  selectedProductId = null;
   orderModalForm.reset();
 }
 
 function closeDetailModal() {
   detailModal.classList.remove("is-open");
   syncModalOpenState();
+}
+
+function setOrderSubmitLoading(isLoading) {
+  if (!orderSubmitButton) return;
+  orderSubmitButton.disabled = isLoading;
+  orderSubmitButton.classList.toggle("is-loading", isLoading);
+  orderSubmitButton.textContent = isLoading ? orderSubmitLoadingLabel : orderSubmitDefaultLabel;
 }
 
 function buildDetailModalMarkup() {
@@ -76,26 +81,10 @@ function buildDetailModalMarkup() {
     </div>`;
 }
 
-// Працює і для статичних і для динамічних карток
-document.addEventListener("click", (event) => {
-  const card = event.target.closest(".bestsellers-card");
-  if (!card) return;
-  if (event.target.closest(".modal-background")) return;
-
-  const titleEl = card.querySelector(".bestsellers-bouqets-title");
-  const priceEl = card.querySelector(".price-text");
-  const imgElement = card.querySelector(".bestsellers-image");
-
-  if (!titleEl || !priceEl || !imgElement) return;
-
-  const title = titleEl.textContent;
-  const price = priceEl.textContent;
-  const text = card.dataset.text ?? "";
-  const src = imgElement.getAttribute("src");
-  const rawSrcset = imgElement.getAttribute("srcset");
-
+function fillDetailModal(title, price, text, src, rawSrcset, productId) {
   detailModalContent.replaceChildren();
   detailModalContent.insertAdjacentHTML("beforeend", buildDetailModalMarkup());
+  detailModalContent.dataset.productId = productId ?? "";
 
   const detailImage = detailModalContent.querySelector(".detail-modal-image");
   detailImage.src = src;
@@ -107,10 +96,56 @@ document.addEventListener("click", (event) => {
   detailModalContent.querySelector(".detail-modal-text").textContent = text;
 
   openDetailModal();
+}
+
+// Bestsellers картки
+document.addEventListener("click", (event) => {
+  const card = event.target.closest(".bestsellers-card");
+  if (!card) return;
+
+  const titleEl = card.querySelector(".bestsellers-bouqets-title");
+  const priceEl = card.querySelector(".price-text");
+  const imgElement = card.querySelector(".bestsellers-image");
+
+  if (!titleEl || !priceEl || !imgElement) return;
+
+  fillDetailModal(
+    titleEl.textContent,
+    priceEl.textContent,
+    card.dataset.text ?? "",
+    imgElement.getAttribute("src"),
+    imgElement.getAttribute("srcset"),
+    card.dataset.productId ? Number(card.dataset.productId) : null
+  );
 });
 
-closeDetailButton?.addEventListener("click", closeDetailModal);
-closeOrderButton?.addEventListener("click", closeOrderModal);
+// Букети
+bouquetsList?.addEventListener("click", (event) => {
+  const detailsTrigger = event.target.closest(".bouquets-more-button");
+  if (!detailsTrigger) return;
+
+  const parentItem = detailsTrigger.closest(".bouquets-list-item");
+
+  fillDetailModal(
+    parentItem.querySelector(".bestsellers-bouqets-title").textContent,
+    parentItem.querySelector(".price-text").textContent,
+    parentItem.querySelector(".bestsellers-bouqets-subtitle").textContent,
+    parentItem.querySelector(".bouqets-item-image").getAttribute("src"),
+    parentItem.querySelector(".bouqets-item-image").getAttribute("srcset"),
+    parentItem.dataset.productId ?? ""
+  );
+});
+
+closeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    closeDetailModal();
+    closeOrderModal();
+  });
+});document.getElementById("close-order-modal-button")?.addEventListener("click", () => {
+  closeOrderModal();
+});
+
+
 
 detailModal.addEventListener("click", (e) => {
   if (e.target === e.currentTarget) closeDetailModal();
@@ -122,40 +157,52 @@ orderModal.addEventListener("click", (e) => {
 
 detailModalContent.addEventListener("click", (e) => {
   if (e.target.id === "detail-modal-cta" || e.target.closest("#detail-modal-cta")) {
-    switchToOrderModal();
+    const productIdRaw = detailModalContent.dataset.productId;
+    const productId = productIdRaw ? Number(productIdRaw) : null;
+    closeDetailModal();
+    openOrderModal(productId ?? null);
   }
 });
 
-orderModalForm.addEventListener("submit", (e) => {
+orderButtons.forEach((button) =>
+  button.addEventListener("click", () => {
+    openOrderModal(null);
+  })
+);
+
+orderModalForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  if (isOrderSubmitting || orderModalForm.dataset.submitting === "true") return;
+
+  isOrderSubmitting = true;
+  orderModalForm.dataset.submitting = "true";
+
   const formData = new FormData(e.currentTarget);
-  const data = Object.fromEntries(formData.entries());
-  alert(`Thank you, ${data.name}! We will call you at ${data.phone}.`);
-  e.currentTarget.reset();
-  closeOrderModal();
+  const payload = Object.fromEntries(formData.entries());
+
+  setOrderSubmitLoading(true);
+
+  try {
+    await apiClient.post("/orders", {
+      name: payload.name,
+      phone: payload.phone,
+      address: payload.address,
+      comment: payload.comment ?? "",
+      productId: selectedProductId,
+    });
+
+    showSuccessNotification(`Дякуємо, ${payload.name}! Ми зателефонуємо вам за номером ${payload.phone}.`);
+    closeOrderModal();
+  } catch (error) {
+    const message = extractErrorMessage(error, "Не вдалося оформити замовлення. Спробуйте пізніше.");
+    if (message) showErrorNotification(message);
+  } finally {
+    isOrderSubmitting = false;
+    delete orderModalForm.dataset.submitting;
+    setOrderSubmitLoading(false);
+  }
 });
-
-const phoneInput = document.getElementById("phone");
-
-if (phoneInput) {
-  phoneInput.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && phoneInput.value.length <= 1) {
-      phoneInput.value = "";
-    }
-  });
-
-  phoneInput.addEventListener("input", (e) => {
-    let value = e.target.value.replace(/\D/g, "");
-    if (!value) { e.target.value = ""; return; }
-    if (value.length > 10) value = value.slice(0, 10);
-    let formatted = "";
-    if (value.length >= 1) formatted = "(" + value.slice(0, 3);
-    if (value.length >= 4) formatted += ") " + value.slice(3, 6);
-    if (value.length >= 7) formatted += "-" + value.slice(6, 10);
-    if (value.length < 4) formatted = value.slice(0, 3);
-    e.target.value = formatted;
-  });
-}
 
 document.querySelector(".hero-button")?.addEventListener("click", () => {
   document.getElementById("bestsellers")?.scrollIntoView({ behavior: "smooth" });

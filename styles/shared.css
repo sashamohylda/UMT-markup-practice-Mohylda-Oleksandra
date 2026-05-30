@@ -347,6 +347,12 @@ textarea:hover {
     border-color: var(--notification-error-bg);
 }
 
+.notification--success {
+    color: var(--notification-success-text);
+    background-color: var(--notification-success-bg);
+    border-color: var(--notification-success-border);
+}
+
 /* Loader */
 
 .content-loader {
