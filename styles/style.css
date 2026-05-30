@@ -845,17 +845,14 @@ footer {
 
     .detail-modal-image {
         width: 308px;
-<<<<<<< HEAD
         height: 337px;
         flex-shrink: 0;
         object-fit: cover;
         border-radius: 16px;
-=======
         height: 328px;
         max-height: none;
         flex-shrink: 0;
         object-fit: cover;
->>>>>>> 6f545ec (feat: connect frontend to backend API)
     }
 
     .detail-modal-button {
@@ -1061,12 +1058,10 @@ footer {
     .detail-modal-image {
         width: 536px;
         height: 572px;
-<<<<<<< HEAD
-=======
+
         min-width: 536px;
         max-width: none;
         max-height: none;
->>>>>>> 6f545ec (feat: connect frontend to backend API)
         flex-shrink: 0;
         object-fit: cover;
     }
